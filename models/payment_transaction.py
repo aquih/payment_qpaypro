@@ -6,9 +6,11 @@ from werkzeug import urls
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
-from odoo.addons.payment_bac.controllers.payment import QPayProController
+from odoo.addons.payment_qpaypro.controllers.payment import QPayProController
 from odoo.tools.float_utils import float_compare
 from odoo.http import request
+
+import requests
 
 _logger = logging.getLogger(__name__)
 
@@ -21,7 +23,7 @@ class PaymentTransaction(models.Model):
         if self.provider != 'qpaypro':
             return res
         
-        return_url = urls.url_join(self.acquirer_id.get_base_url(), QPayProController._return_url),
+        return_url = urls.url_join(self.acquirer_id.get_base_url(), QPayProController._return_url)
 
         data = {
             'x_login': self.acquirer_id.qpaypro_login,
@@ -29,22 +31,22 @@ class PaymentTransaction(models.Model):
             'x_amount': processing_values['amount'],
             'x_currency_code': self.currency_id.name,
             'x_first_name': self.partner_id.name,
-            'x_last_name': '',
-            'x_phone': self.partner_id.phone or '',
-            'x_ship_to_address': (self.partner_id.street or '') + (self.partner_id.street2 or ''),
-            'x_ship_to_city': self.partner_id.city or '',
-            'x_ship_to_country': self.partner_id.country_id.name or '',
-            'x_ship_to_state': self.partner_id.state_id.name or '',
-            'x_ship_to_zip': self.partner_id.zip,
-            'x_ship_to_phone': self.partner_id.phone,
-            'x_company': self.partner_id.vat or '',
-            'x_address': (self.partner_id.street or '') + (self.partner_id.street2 or ''),
-            'x_city': self.partner_id.city or '',
-            'x_country': self.partner_id.country_id.name or '',
-            'x_state': self.partner_id.state_id.name or '',
+            'x_last_name': '-',
+            'x_phone': self.partner_id.phone or '-',
+            'x_ship_to_address': (self.partner_id.street or '-') + (self.partner_id.street2 or '-'),
+            'x_ship_to_city': self.partner_id.city or '-',
+            'x_ship_to_country': self.partner_id.country_id.name or '-',
+            'x_ship_to_state': self.partner_id.state_id.name or '-',
+            'x_ship_to_zip': self.partner_id.zip or '-',
+            'x_ship_to_phone': self.partner_id.phone or '-',
+            'x_company': self.partner_id.vat or '-',
+            'x_address': (self.partner_id.street or '-') + (self.partner_id.street2 or '-'),
+            'x_city': self.partner_id.city or '-',
+            'x_country': self.partner_id.country_id.name or '-',
+            'x_state': self.partner_id.state_id.name or '-',
             'x_freight': '',
-            'x_zip': self.partner_id.zip,
-            'x_email': self.partner_id.email,
+            'x_zip': self.partner_id.zip or '-',
+            'x_email': self.partner_id.email or '-',
             'x_description': self.reference,
             'x_reference': self.reference,
             'x_invoice_num': self.reference,
@@ -71,7 +73,7 @@ class PaymentTransaction(models.Model):
         _logger.warning(resultado)
         
         rendering_values = {
-            'api_url': self.acquirer_id._visanet_get_api_url(),
+            'api_url': self.acquirer_id._qpaypro_get_api_url(),
             'qpaypro_token': resultado['data']['token'],
         }
         return rendering_values
