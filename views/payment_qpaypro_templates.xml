@@ -3,8 +3,8 @@
     <data>
 
         <template id="redirect_form">
-            <form t-att-action="api_url+'?token='+qpaypro_token" method="post">
-                <input type="hidden" name="qpaypro_token" t-att-value="qpaypro_token" />
+            <form t-att-action="api_url" method="get">
+                <input type="hidden" name="token" t-att-value="qpaypro_token" />
             </form>
         </template>
 

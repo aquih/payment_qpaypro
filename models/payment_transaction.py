@@ -1,5 +1,6 @@
 # coding: utf-8
 import logging
+import json
 
 from werkzeug import urls
 
@@ -26,8 +27,8 @@ class PaymentTransaction(models.Model):
         return_url = urls.url_join(self.acquirer_id.get_base_url(), QPayProController._return_url)
 
         data = {
-            'x_login': self.acquirer_id.qpaypro_login,
-            'x_api_key': self.acquirer_id.qpaypro_api_secret,
+            'x_login': self.acquirer_id.qpaypro_llave_publica,
+            'x_api_key': self.acquirer_id.qpaypro_llave_privada,
             'x_amount': processing_values['amount'],
             'x_currency_code': self.currency_id.name,
             'x_first_name': self.partner_id.name,
@@ -62,15 +63,17 @@ class PaymentTransaction(models.Model):
             'origen': 'PLUGIN',
         }
         
-        _logger.warning(data)
+        _logger.warning(json.dumps(data, indent=4))
+        _logger.warning(self.state)
 
         token_url = 'https://sandboxpayments.qpaypro.com/checkout/register_transaction_store'
-        if ( 'environment' in self.fields_get() and self.environment == 'prod' ) or ( 'state' in self.fields_get() and self.state == 'enabled' ):
-            token_url = 'https://sandboxpayments.qpaypro.com/checkout/register_transaction_store'
+        if self.acquirer_id.state == 'enabled':
+            token_url = 'https://payments.qpaypro.com/checkout/register_transaction_store'
+        _logger.warning(token_url)
         
         r = requests.post(token_url, json=data)
         resultado = r.json()
-        _logger.warning(resultado)
+        _logger.warning(json.dumps(resultado, indent=4))
         
         rendering_values = {
             'api_url': self.acquirer_id._qpaypro_get_api_url(),

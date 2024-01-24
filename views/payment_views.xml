@@ -8,8 +8,8 @@
         <field name="arch" type="xml">
             <xpath expr='//group[@name="acquirer"]' position='inside'>
                 <group attrs="{'invisible': [('provider', '!=', 'qpaypro')]}">
-                    <field name="qpaypro_login"/>
-                    <field name="qpaypro_api_secret"/>
+                    <field name="qpaypro_llave_publica"/>
+                    <field name="qpaypro_llave_privada"/>
                 </group>
             </xpath>
         </field>
