@@ -55,9 +55,9 @@ class PaymentTransaction(models.Model):
             'x_relay_url': return_url,
             'x_type': 'AUTH_ONLY',
             'x_method': 'CC',
-            'custom_fields': '{}',
+            'custom_fields': {},
             'x_visacuotas': 'si',
-            'products': '[]',
+            'products': [[self.company_id.name, self.company_id.name, '', 1, processing_values['amount'], processing_values['amount']]],
             'taxes': '0',
             'http_origin': self.acquirer_id.get_base_url(),
             'origen': 'PLUGIN',
@@ -113,9 +113,9 @@ class PaymentTransaction(models.Model):
             return
         
         reference = data.get('x_invoice_num', '')
+        status_code = data.get('x_response_status', '3')
         
         self.acquirer_reference = reference
-        status_code = data.get('x_response_status', '3')
         if status_code == '1':
             self._set_done()
         else:

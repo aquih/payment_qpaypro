@@ -14,12 +14,13 @@ class QPayProController(http.Controller):
     _return_url = '/payment/payment_qpaypro/return'
 
     @http.route(['/payment/payment_qpaypro/return'], type='http', auth='public', csrf=False, save_session=False)
-    def qpaypro_return(self, **post):
+    def qpaypro_return(self, **data):
         """ Process the data returned by QPayPro after redirection.
 
         :param dict data: The feedback data
         """
-        _logger.info('QPayPro: entering form_feedback with post data %s', pprint.pformat(post))  # debug
-        request.env['payment.transaction'].sudo()._handle_feedback_data(post, 'qpaypro')
+        if data:
+            _logger.info('QPayPro: entering form_feedback with post data %s', pprint.pformat(data))  # debug
+            request.env['payment.transaction'].sudo()._handle_feedback_data('qpaypro', data)
 
         return request.redirect('/payment/status')
