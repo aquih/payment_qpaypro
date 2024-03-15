@@ -55,7 +55,7 @@ class PaymentTransaction(models.Model):
             'x_relay_url': return_url,
             'x_type': 'AUTH_ONLY',
             'x_method': 'CC',
-            'custom_fields': {},
+            'custom_fields': {'reference': self.reference, 'amount': processing_values['amount']},
             'x_visacuotas': 'si',
             'products': [[self.company_id.name, self.company_id.name, '', 1, processing_values['amount'], processing_values['amount']]],
             'taxes': '0',
@@ -87,7 +87,7 @@ class PaymentTransaction(models.Model):
         if provider != 'qpaypro':
             return tx
         
-        reference = data.get('x_invoice_num', '')
+        reference = data.get('reference', '')
         if not reference:
             error_msg = _('QPayPro: received data with missing reference (%s)') % (reference)
             _logger.info(error_msg)
@@ -112,7 +112,7 @@ class PaymentTransaction(models.Model):
         if self.provider != 'qpaypro':
             return
         
-        reference = data.get('x_invoice_num', '')
+        reference = data.get('reference', '')
         status_code = data.get('x_response_status', '3')
         
         self.acquirer_reference = reference
