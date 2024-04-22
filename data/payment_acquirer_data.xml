@@ -7,7 +7,7 @@
         <field name="provider">qpaypro</field>
         <field name="company_id" ref="base.main_company"/>
         <field name="image_128" type="base64" file="payment_qpaypro/static/src/img/qpaypro_icon.png"/>
-        <field name="pre_msg"><![CDATA[<p>Será redireccionado al sitio de Credomatic para que ingrese sus datos luego de apachar el botón de "Pagar ahora".</p>]]></field>
+        <field name="pre_msg"><![CDATA[<p>Será redireccionado al sitio de QPayPro para que ingrese sus datos luego de apachar el botón de "Pagar ahora".</p>]]></field>
         <field name="description" type="html">
             <p>
                 Pagos con QPayPro.
