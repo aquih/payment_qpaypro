@@ -53,7 +53,7 @@ class PaymentTransaction(models.Model):
             'x_type': 'AUTH_ONLY',
             'x_method': 'CC',
             'custom_fields': {'reference': self.reference, 'amount': processing_values['amount']},
-            'x_visacuotas': 'si',
+            'x_visacuotas': 'si' if processing_values['amount'] >= 1000 else 'no',
             'products': [[self.company_id.name, self.company_id.name, '', 1, processing_values['amount'], processing_values['amount']]],
             'taxes': '0',
             'http_origin': self.acquirer_id.get_base_url(),
