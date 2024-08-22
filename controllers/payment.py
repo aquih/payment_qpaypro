@@ -11,9 +11,9 @@ from odoo.http import request
 _logger = logging.getLogger(__name__)
 
 class QPayProController(http.Controller):
-    _return_url = '/payment/payment_qpaypro/return'
+    _return_url = '/payment/qpaypro/return'
 
-    @http.route(['/payment/payment_qpaypro/return'], type='http', auth='public', csrf=False, save_session=False)
+    @http.route(['/payment/qpaypro/return'], type='http', auth='public', csrf=False, save_session=False)
     def qpaypro_return(self, **data):
         """ Process the data returned by QPayPro after redirection.
 
@@ -22,5 +22,7 @@ class QPayProController(http.Controller):
         if data:
             _logger.info('QPayPro: entering form_feedback with post data %s', pprint.pformat(data))  # debug
             request.env['payment.transaction'].sudo()._handle_feedback_data('qpaypro', data)
+            tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data('qpaypro', data)
+            tx_sudo._handle_notification_data('qpaypro', data)
 
         return request.redirect('/payment/status')

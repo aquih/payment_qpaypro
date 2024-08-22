@@ -3,13 +3,15 @@ import logging
 
 from odoo import api, fields, models, _
 
+from odoo.addons.payment_qpaypro import const
+
 _logger = logging.getLogger(__name__)
 
 
-class AcquirerQPayPro(models.Model):
-    _inherit = 'payment.acquirer'
+class PaymentProvider(models.Model):
+    _inherit = 'payment.provider'
     
-    provider = fields.Selection(selection_add=[('qpaypro', 'QPayPro')], ondelete={'qpaypro': 'set default'})
+    code = fields.Selection(selection_add=[('qpaypro', 'QPayPro')], ondelete={'qpaypro': 'set default'})
     qpaypro_llave_publica = fields.Char('Llave Pública', required_if_provider='qpaypro', groups='base.group_user')
     qpaypro_llave_privada = fields.Char('Llave Privada', required_if_provider='qpaypro', groups='base.group_user')
 
@@ -19,9 +21,10 @@ class AcquirerQPayPro(models.Model):
             return "https://payments.qpaypro.com/checkout/store"
         else:
             return "https://sandboxpayments.qpaypro.com/checkout/store"
-            
-    def _get_default_payment_method_id(self):
-        self.ensure_one()
-        if self.provider != 'qpaypro':
-            return super()._get_default_payment_method_id()
-        return self.env.ref('payment_qpaypro.payment_method_qpaypro').id
+
+    def _get_default_payment_method_codes(self):
+        """ Override of `payment` to return the default payment method codes. """
+        default_codes = super()._get_default_payment_method_codes()
+        if self.code != 'qpaypro':
+            return default_codes
+        return const.DEFAULT_PAYMENT_METHODS_CODES

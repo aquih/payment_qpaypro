@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="provider_form_qpaypro" model="ir.ui.view">
+        <field name="name">provider.form.qpaypro</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <group name="provider_credentials" position='inside'>
+                <group invisible="code != 'qpaypro'">
+                    <field name="qpaypro_llave_publica"/>
+                    <field name="qpaypro_llave_privada"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>
