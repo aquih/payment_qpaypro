@@ -8,10 +8,13 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 from odoo.addons.payment_qpaypro.controllers.payment import QPayProController
+from odoo.tools.float_utils import float_compare
+from odoo.http import request
 
 import requests
 
 _logger = logging.getLogger(__name__)
+
 
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
@@ -79,12 +82,12 @@ class PaymentTransaction(models.Model):
         return rendering_values
         
     @api.model
-    def _get_tx_from_notification_data(self, provider_code, notification_data):
-        tx = super()._get_tx_from_notification_data(provider_code, notification_data)
-        if provider_code != 'qpaypro':
+    def _get_tx_from_feedback_data(self, provider, data):
+        tx = super()._get_tx_from_feedback_data(provider, data)
+        if provider != 'qpaypro':
             return tx
         
-        reference = notification_data.get('reference', '')
+        reference = data.get('reference', '')
         if not reference:
             error_msg = _('QPayPro: received data with missing reference (%s)') % (reference)
             _logger.info(error_msg)
@@ -104,14 +107,15 @@ class PaymentTransaction(models.Model):
 
         return tx
 
-    def _process_notification_data(self, notification_data):
-        super()._process_notification_data(notification_data)
-        if self.provider_code != 'qpaypro':
+    def _process_feedback_data(self, data):
+        super()._process_feedback_data(data)
+        if self.provider != 'qpaypro':
             return
         
-        self.provider_reference = notification_data.get('reference', '')
-
-        status_code = notification_data.get('x_response_status', '3')
+        reference = data.get('reference', '')
+        status_code = data.get('x_response_status', '3')
+        
+        self.acquirer_reference = reference
         if status_code == '1':
             self._set_done()
         else:
