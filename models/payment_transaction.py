@@ -21,11 +21,11 @@ class PaymentTransaction(models.Model):
         if self.provider != 'qpaypro':
             return res
         
-        return_url = urls.url_join(self.acquirer_id.get_base_url(), QPayProController._return_url)
+        return_url = urls.url_join(self.provider_id.get_base_url(), QPayProController._return_url)
 
         data = {
-            'x_login': self.acquirer_id.qpaypro_llave_publica,
-            'x_api_key': self.acquirer_id.qpaypro_llave_privada,
+            'x_login': self.provider_id.qpaypro_llave_publica,
+            'x_api_key': self.provider_id.qpaypro_llave_privada,
             'x_amount': processing_values['amount'],
             'x_currency_code': self.currency_id.name,
             'x_first_name': self.partner_id.name.split(maxsplit=1)[0],
@@ -56,7 +56,7 @@ class PaymentTransaction(models.Model):
             'x_visacuotas': 'si' if processing_values['amount'] >= 1000 else 'no',
             'products': [[self.company_id.name, self.company_id.name, '', 1, processing_values['amount'], processing_values['amount']]],
             'taxes': '0',
-            'http_origin': self.acquirer_id.get_base_url(),
+            'http_origin': self.provider_id.get_base_url(),
             'origen': 'PLUGIN',
         }
         
@@ -64,7 +64,7 @@ class PaymentTransaction(models.Model):
         _logger.warning(self.state)
 
         token_url = 'https://sandboxpayments.qpaypro.com/checkout/register_transaction_store'
-        if self.acquirer_id.state == 'enabled':
+        if self.provider_id.state == 'enabled':
             token_url = 'https://payments.qpaypro.com/checkout/register_transaction_store'
         _logger.warning(token_url)
         
@@ -73,7 +73,7 @@ class PaymentTransaction(models.Model):
         _logger.warning(json.dumps(resultado, indent=4))
         
         rendering_values = {
-            'api_url': self.acquirer_id._qpaypro_get_api_url(),
+            'api_url': self.provider_id._qpaypro_get_api_url(),
             'qpaypro_token': resultado['data']['token'],
         }
         return rendering_values

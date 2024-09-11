@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
 
-    <record id="payment_acquirer_qpaypro" model="payment.provider">
+    <record id="payment_provider_qpaypro" model="payment.provider">
         <field name="name">QPayPro</field>
         <field name="image_128"
                type="base64"

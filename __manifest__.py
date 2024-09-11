@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': 'QPayPro Payment Acquirer',
-    'category': 'Accounting/Payment',
-    'summary': 'Payment Acquirer: QPayPro Implementation',
+    'name': 'QPayPro Payment Provider',
+    'category': 'Accounting/Payment Providers',
+    'summary': 'Payment Provider: QPayPro Implementation',
     'version': '2.0',
-    'description': """QPayPro Payment Acquirer""",
+    'description': """QPayPro Payment Provider""",
     'author': 'aquíH',
     'website': 'http://aquih.com/',
     'depends': ['payment'],
