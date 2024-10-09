@@ -115,7 +115,6 @@ class PaymentTransaction(models.Model):
         payment_method = self.env['payment.method']._get_from_code(
             'qpaypro'
         )
-        _logger.info(payment_method)
         self.payment_method_id = payment_method or self.payment_method_id
 
         status_code = notification_data.get('x_response_status', '3')
