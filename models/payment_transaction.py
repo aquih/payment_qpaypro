@@ -18,6 +18,7 @@ class PaymentTransaction(models.Model):
     
     def _get_specific_rendering_values(self, processing_values):
         res = super()._get_specific_rendering_values(processing_values)
+        logging.warning(processing_values)
         if processing_values['provider_code'] != 'qpaypro':
             return res
         
@@ -90,7 +91,7 @@ class PaymentTransaction(models.Model):
             _logger.info(error_msg)
             raise ValidationError(error_msg)
 
-        tx = self.search([('reference', '=', reference), ('provider', '=', 'qpaypro')])
+        tx = self.search([('reference', '=', reference), ('provider_code', '=', 'qpaypro')])
         _logger.info(tx)
 
         if not tx or len(tx) > 1:
@@ -110,6 +111,12 @@ class PaymentTransaction(models.Model):
             return
         
         self.provider_reference = notification_data.get('reference', '')
+
+        payment_method = self.env['payment.method']._get_from_code(
+            'qpaypro'
+        )
+        _logger.info(payment_method)
+        self.payment_method_id = payment_method or self.payment_method_id
 
         status_code = notification_data.get('x_response_status', '3')
         if status_code == '1':

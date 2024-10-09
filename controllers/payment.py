@@ -22,6 +22,6 @@ class QPayProController(http.Controller):
         if data:
             _logger.info('QPayPro: entering form_feedback with post data %s', pprint.pformat(data))  # debug
             tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data('qpaypro', data)
-            tx_sudo._process_notification_data('qpaypro', data)
+            tx_sudo._handle_notification_data('qpaypro', data)
 
         return request.redirect('/payment/status')
