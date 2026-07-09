@@ -4,7 +4,7 @@
     'name': 'QPayPro Payment Provider',
     'category': 'Accounting/Payment Providers',
     'summary': 'Payment Provider: QPayPro Implementation',
-    'version': '2.0',
+    'version': '2.1',
     'description': """QPayPro Payment Provider""",
     'author': 'aquíH',
     'website': 'http://aquih.com/',
